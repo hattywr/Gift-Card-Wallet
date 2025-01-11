@@ -17,6 +17,9 @@ from .security import (
     create_refresh_token,
     get_current_user
 )
+from .logger import setup_logger
+# Initialize logger
+logger = setup_logger(__name__, "auth.log")
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
@@ -55,11 +58,14 @@ class UserResponse(BaseModel):
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def register_user(user: UserCreate, db: Session = Depends(get_db)):
+    logger.info(f"Attempting to register new user: {user.username}")
     try:
         # Hash the password
+        logger.debug("Hashing password")
         hashed_password = get_password_hash(user.password)
         
         # Create new user instance
+        logger.debug(f"Creating new user instance for {user.username}")
         db_user = User(
             user_id=str(uuid.uuid4()),
             username=user.username,
@@ -74,16 +80,20 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(db_user)
         
+        logger.info(f"Successfully registered user: {user.username}")
         return db_user
         
     except IntegrityError as e:
         db.rollback()
-        if "username" in str(e).lower():
+        error_msg = str(e).lower()
+        logger.error(f"Registration failed due to integrity error: {error_msg}")
+        
+        if "username" in error_msg:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Username already registered"
             )
-        elif "email" in str(e).lower():
+        elif "email" in error_msg:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Email already registered"
@@ -92,51 +102,82 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Registration failed"
         )
+    except Exception as e:
+        logger.critical(f"Unexpected error during user registration: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
 
 @router.post("/token", response_model=Token)
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
+    logger.info(f"Login attempt for user: {form_data.username}")
+    
     # Find user
     user = db.query(User).filter(User.username == form_data.username).first()
     if not user or not verify_password(form_data.password, user.password_hash):
+        logger.warning(f"Failed login attempt for user: {form_data.username}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    # Update last login
-    user.last_login = datetime.utcnow()
-    db.commit()
-    
-    # Create tokens
-    access_token = create_access_token(data={"sub": user.username})
-    refresh_token = create_refresh_token(data={"sub": user.username})
-    
-    return {
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "token_type": "bearer"
-    }
+    try:
+        # Update last login
+        logger.debug(f"Updating last login time for user: {user.username}")
+        user.last_login = datetime.utcnow()
+        db.commit()
+        
+        # Create tokens
+        logger.debug(f"Generating access and refresh tokens for user: {user.username}")
+        access_token = create_access_token(data={"sub": user.username})
+        refresh_token = create_refresh_token(data={"sub": user.username})
+        
+        logger.info(f"Successful login for user: {user.username}")
+        return {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "token_type": "bearer"
+        }
+    except Exception as e:
+        logger.error(f"Error during token generation: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Login process failed"
+        )
 
 @router.post("/refresh", response_model=Token)
 async def refresh_token(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    # Create new tokens
-    access_token = create_access_token(data={"sub": current_user.username})
-    refresh_token = create_refresh_token(data={"sub": current_user.username})
-    
-    return {
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "token_type": "bearer"
-    }
+    logger.info(f"Token refresh requested for user: {current_user.username}")
+    try:
+        # Create new tokens
+        logger.debug(f"Generating new tokens for user: {current_user.username}")
+        access_token = create_access_token(data={"sub": current_user.username})
+        refresh_token = create_refresh_token(data={"sub": current_user.username})
+        
+        logger.info(f"Successfully refreshed tokens for user: {current_user.username}")
+        return {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "token_type": "bearer"
+        }
+    except Exception as e:
+        logger.error(f"Error during token refresh: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Token refresh failed"
+        )
 
 @router.post("/logout")
 async def logout(current_user: User = Depends(get_current_user)):
+    logger.info(f"Logout request for user: {current_user.username}")
     # In a more complex implementation, you might want to blacklist the token
+    logger.debug(f"Successfully logged out user: {current_user.username}")
     return {"message": "Successfully logged out"}
