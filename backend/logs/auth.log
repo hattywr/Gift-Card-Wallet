@@ -6,3 +6,11 @@
 2025-01-10 20:22:45 - app.auth - DEBUG - Updating last login time for user: hattywr
 2025-01-10 20:22:45 - app.auth - DEBUG - Generating access and refresh tokens for user: hattywr
 2025-01-10 20:22:45 - app.auth - INFO - Successful login for user: hattywr
+2025-01-11 18:33:58 - app.auth - INFO - Attempting to register new user: hatty2
+2025-01-11 18:33:58 - app.auth - DEBUG - Hashing password
+2025-01-11 18:33:59 - app.auth - DEBUG - Creating new user instance for hatty2
+2025-01-11 18:33:59 - app.auth - INFO - Successfully registered user: hatty2
+2025-01-11 18:46:39 - app.auth - INFO - Login attempt for user: hattywr
+2025-01-11 18:46:40 - app.auth - DEBUG - Updating last login time for user: hattywr
+2025-01-11 18:46:40 - app.auth - DEBUG - Generating access and refresh tokens for user: hattywr
+2025-01-11 18:46:40 - app.auth - INFO - Successful login for user: hattywr

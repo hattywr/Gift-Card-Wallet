@@ -1,0 +1,19 @@
+2025-01-11 18:45:26 - app.main - INFO - Root endpoint accessed
+2025-01-11 18:45:33 - app.main - DEBUG - Health check endpoint accessed
+2025-01-11 18:45:38 - app.main - INFO - Database health check initiated
+2025-01-11 18:45:38 - app.main - INFO - Database health check successful
+2025-01-11 18:45:44 - app.main - INFO - Database schema retrieval initiated
+2025-01-11 18:45:44 - app.main - DEBUG - Found 3 tables in database
+2025-01-11 18:45:44 - app.main - DEBUG - Inspecting table: gift_cards
+2025-01-11 18:45:44 - app.main - DEBUG - Table gift_cards: 11 columns retrieved
+2025-01-11 18:45:44 - app.main - DEBUG - Inspecting table: users
+2025-01-11 18:45:44 - app.main - DEBUG - Table users: 10 columns retrieved
+2025-01-11 18:45:44 - app.main - DEBUG - Inspecting table: vendors
+2025-01-11 18:45:44 - app.main - DEBUG - Table vendors: 5 columns retrieved
+2025-01-11 18:45:44 - app.main - INFO - Database schema retrieved successfully
+2025-01-11 18:46:05 - app.main - WARNING - HTTP 401 error occurred. Path: /vendors, Detail: Not authenticated
+2025-01-11 18:46:58 - app.main - INFO - Creating new vendor 'Little Caesars' by user hattywr
+2025-01-11 18:46:59 - app.main - INFO - Vendor 'Little Caesars' successfully created with ID: 8e3c1eab-eba5-4f5f-a290-21d3f833dbee
+2025-01-11 18:47:19 - app.main - INFO - Listing vendors - Page: 1, Size: 10, Search: None
+2025-01-11 18:47:19 - app.main - DEBUG - Total vendors found: 3
+2025-01-11 18:47:19 - app.main - DEBUG - Retrieved 3 vendors for current page
