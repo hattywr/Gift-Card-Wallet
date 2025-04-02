@@ -3,64 +3,33 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from datetime import datetime, date
+from datetime import datetime
 import uuid
-from pydantic import BaseModel, EmailStr, constr, validator
 
 from .database import get_db
 from .models import User
 from .security import (
-    Token,
-    get_password_hash,
     verify_password,
+    get_password_hash,
     create_access_token,
     create_refresh_token,
-    get_current_user
+    get_current_user,
+    blacklist_token,
+    oauth2_scheme
 )
+from .schemas import UserCreate, UserResponse, Token
 from .logger import setup_logger
+
 # Initialize logger
 logger = setup_logger(__name__, "auth.log")
 
 # Add router path
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
-
-class UserCreate(BaseModel):
-    username: constr(min_length=3, max_length=50)
-    password: constr(min_length=8)
-    email: EmailStr
-    first_name: constr(min_length=1, max_length=50)
-    last_name: constr(min_length=1, max_length=50)
-    date_of_birth: date
-
-    @validator('password')
-    def validate_password(cls, v):
-        if not any(c.isupper() for c in v):
-            raise ValueError('Password must contain at least one uppercase letter')
-        if not any(c.islower() for c in v):
-            raise ValueError('Password must contain at least one lowercase letter')
-        if not any(c.isdigit() for c in v):
-            raise ValueError('Password must contain at least one number')
-        return v
-
-    class Config:
-        from_attributes = True
-
-class UserResponse(BaseModel):
-    user_id: str
-    username: str
-    email: str
-    first_name: str
-    last_name: str
-    date_of_birth: date
-    created_at: datetime
-
-    class Config:
-        from_attributes = True
-
 #User registration
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def register_user(user: UserCreate, db: Session = Depends(get_db)):
+    """Register a new user"""
     logger.info(f"Attempting to register new user: {user.username}")
     try:
         # Hash the password
@@ -112,12 +81,13 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
             detail="Internal server error"
         )
 
-#Generate user access toekn
+#Generate user access token
 @router.post("/token", response_model=Token)
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
+    """Get access and refresh tokens with username and password"""
     logger.info(f"Login attempt for user: {form_data.username}")
     
     # Find user
@@ -134,7 +104,6 @@ async def login_for_access_token(
         # Update last login
         logger.debug(f"Updating last login time for user: {user.username}")
         user.last_login = datetime.utcnow()
-        #user.last_login = datetime.now(datetime.timezone.utc)
         db.commit()
         
         # Create tokens
@@ -160,6 +129,7 @@ async def refresh_token(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    """Get new access and refresh tokens using current authentication"""
     logger.info(f"Token refresh requested for user: {current_user.username}")
     try:
         # Create new tokens
@@ -181,8 +151,15 @@ async def refresh_token(
         )
 
 @router.post("/logout")
-async def logout(current_user: User = Depends(get_current_user)):
+async def logout(
+    current_user: User = Depends(get_current_user),
+    token: str = Depends(oauth2_scheme)
+):
+    """Logout current user (blacklists the token)"""
     logger.info(f"Logout request for user: {current_user.username}")
-    # In a more complex implementation, you might want to blacklist the token
-    logger.debug(f"Successfully logged out user: {current_user.username}")
+    
+    # Blacklist the current token
+    blacklist_token(token)
+    
+    logger.info(f"Successfully logged out user: {current_user.username}")
     return {"message": "Successfully logged out"}

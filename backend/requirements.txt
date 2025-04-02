@@ -5,7 +5,16 @@ pymysql==1.1.0
 python-dotenv==1.0.0
 bcrypt==4.0.1
 pydantic==2.4.2
+pydantic-settings==2.0.3
 python-multipart==0.0.6
 python-jose==3.3.0  # For JWT tokens
 passlib==1.7.4     # For password hashing
-alembic==1.12.1    # For database migrati
+alembic==1.12.1    # For database migrations
+email-validator>=2.0.0
+
+# Testing dependencies
+pytest==7.4.3
+pytest-cov==4.1.0
+httpx==0.25.1      # For testing FastAPI
+Pillow==10.1.0     # For test image generation
+numpy==1.26.2      # For test image generation

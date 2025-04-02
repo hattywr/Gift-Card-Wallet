@@ -29,3 +29,4 @@
 2025-01-13 18:07:27 - app.main - DEBUG - Inspecting table: vendors
 2025-01-13 18:07:27 - app.main - DEBUG - Table vendors: 5 columns retrieved
 2025-01-13 18:07:27 - app.main - INFO - Database schema retrieved successfully
+2025-04-01 20:25:01 - app.main - INFO - Root endpoint accessed

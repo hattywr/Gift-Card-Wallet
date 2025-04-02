@@ -1,6 +1,13 @@
 // src/types/navigation.ts
 export type RootStackParamList = {
-    Home: undefined;
-    Profile: undefined;
-    Settings: undefined;
-  };
+  // Auth Stack
+  Login: undefined;
+  Register: undefined;
+  
+  // Main Stack
+  Home: undefined;
+  AddGiftCard: undefined;
+  GiftCardDetail: { cardId: string };
+  Profile: undefined;
+  Settings: undefined;
+};

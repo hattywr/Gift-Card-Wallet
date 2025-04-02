@@ -54,3 +54,10 @@
 2025-01-13 18:07:13 - app.security - DEBUG - Creating access token for user: hattywr
 2025-01-13 18:07:13 - app.security - DEBUG - Creating refresh token for user: hattywr
 2025-01-13 18:07:25 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 3
+2025-04-01 20:24:45 - app.security - INFO - Token blacklist initialized
+2025-04-01 20:24:45 - app.security - INFO - RateLimiter initialized with 60 requests per minute
+2025-04-01 20:25:01 - app.security - DEBUG - Skipping validation for health check endpoint: /
+2025-04-01 20:25:01 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 1
+2025-04-01 20:25:02 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 2
+2025-04-01 20:25:09 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 3
+2025-04-01 20:25:10 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 4

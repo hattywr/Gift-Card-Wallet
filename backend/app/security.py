@@ -1,20 +1,22 @@
 # security.py
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, Dict, List, Set
 from fastapi import Depends, HTTPException, Security, Request
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from collections import defaultdict
 import time
-from datetime import datetime, date
+from datetime import datetime
 from fastapi.responses import JSONResponse
+import threading
+
 from .database import get_db
 from .models import User
 from .config import get_settings
 from .logger import setup_logger
+from .schemas import TokenData
 
 # Get settings instance
 settings = get_settings()
@@ -28,14 +30,31 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # OAuth2 scheme
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
-# Token models
-class Token(BaseModel):
-    access_token: str
-    refresh_token: str
-    token_type: str
+# Token blacklist (in-memory for now, would use Redis or similar in production)
+class TokenBlacklist:
+    def __init__(self):
+        self.blacklist: Set[str] = set()
+        self.lock = threading.Lock()
+        logger.info("Token blacklist initialized")
+    
+    def add(self, token: str):
+        with self.lock:
+            self.blacklist.add(token)
+            logger.debug(f"Token added to blacklist. Total blacklisted tokens: {len(self.blacklist)}")
+    
+    def contains(self, token: str) -> bool:
+        with self.lock:
+            return token in self.blacklist
+    
+    def cleanup(self):
+        """
+        Clean up expired tokens from blacklist
+        In a production environment, this would be done by a scheduled task
+        """
+        pass  # In a real implementation, we would decode tokens and remove expired ones
 
-class TokenData(BaseModel):
-    username: Optional[str] = None
+# Create token blacklist instance
+token_blacklist = TokenBlacklist()
 
 # Rate limiting
 class RateLimiter:
@@ -85,8 +104,7 @@ def create_access_token(data: dict) -> str:
     logger.debug(f"Creating access token for user: {data.get('sub')}")
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    #expire = datetime.now(datetime.timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire})
+    to_encode.update({"exp": expire, "type": "access"})
     return jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
 # Refresh Access Token
@@ -94,8 +112,17 @@ def create_refresh_token(data: dict) -> str:
     logger.debug(f"Creating refresh token for user: {data.get('sub')}")
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
-    to_encode.update({"exp": expire})
+    to_encode.update({"exp": expire, "type": "refresh"})
     return jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+
+def decode_token(token: str) -> dict:
+    """Decode a JWT token without validation"""
+    return jwt.decode(
+        token, 
+        settings.JWT_SECRET_KEY, 
+        algorithms=[settings.JWT_ALGORITHM], 
+        options={"verify_signature": True}
+    )
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
@@ -108,14 +135,19 @@ async def get_current_user(
     )
     
     try:
+        # Check if token is blacklisted
+        if token_blacklist.contains(token):
+            logger.error("Attempt to use blacklisted token")
+            raise credentials_exception
+            
         payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
             logger.error("Token payload missing username")
             raise credentials_exception
         token_data = TokenData(username=username)
-    except JWTError:
-        logger.error("Failed to decode JWT token")
+    except JWTError as e:
+        logger.error(f"Failed to decode JWT token: {str(e)}")
         raise credentials_exception
         
     user = db.query(User).filter(User.username == token_data.username).first()
@@ -125,6 +157,11 @@ async def get_current_user(
     
     logger.info(f"Successfully authenticated user: {user.username}")
     return user
+
+def blacklist_token(token: str):
+    """Add a token to the blacklist"""
+    token_blacklist.add(token)
+    logger.info("Token added to blacklist")
 
 # Rate limiting middleware
 async def rate_limit_middleware(request: Request, call_next):
