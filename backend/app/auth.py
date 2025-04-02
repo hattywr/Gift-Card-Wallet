@@ -21,7 +21,9 @@ from .logger import setup_logger
 # Initialize logger
 logger = setup_logger(__name__, "auth.log")
 
+# Add router path
 router = APIRouter(prefix="/auth", tags=["authentication"])
+
 
 class UserCreate(BaseModel):
     username: constr(min_length=3, max_length=50)
@@ -56,12 +58,13 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True
 
+#User registration
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def register_user(user: UserCreate, db: Session = Depends(get_db)):
     logger.info(f"Attempting to register new user: {user.username}")
     try:
         # Hash the password
-        logger.debug("Hashing password")
+        logger.debug(f"Hashing password for {user.username}")
         hashed_password = get_password_hash(user.password)
         
         # Create new user instance
@@ -109,6 +112,7 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
             detail="Internal server error"
         )
 
+#Generate user access toekn
 @router.post("/token", response_model=Token)
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
@@ -130,6 +134,7 @@ async def login_for_access_token(
         # Update last login
         logger.debug(f"Updating last login time for user: {user.username}")
         user.last_login = datetime.utcnow()
+        #user.last_login = datetime.now(datetime.timezone.utc)
         db.commit()
         
         # Create tokens

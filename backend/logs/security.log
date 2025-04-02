@@ -1,0 +1,56 @@
+2025-01-11 18:33:00 - app.security - INFO - RateLimiter initialized with 60 requests per minute
+2025-01-11 18:33:11 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 1
+2025-01-11 18:33:11 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 2
+2025-01-11 18:33:45 - app.security - DEBUG - Request validation successful for POST /auth/register
+2025-01-11 18:33:45 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 3
+2025-01-11 18:33:58 - app.security - DEBUG - Request validation successful for POST /auth/register
+2025-01-11 18:33:58 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 4
+2025-01-11 18:33:58 - app.security - DEBUG - Generating password hash
+2025-01-11 18:42:38 - app.security - INFO - RateLimiter initialized with 60 requests per minute
+2025-01-11 18:45:09 - app.security - INFO - RateLimiter initialized with 60 requests per minute
+2025-01-11 18:45:26 - app.security - DEBUG - Skipping validation for health check endpoint: /
+2025-01-11 18:45:26 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 1
+2025-01-11 18:45:33 - app.security - DEBUG - Skipping validation for health check endpoint: /health
+2025-01-11 18:45:33 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 2
+2025-01-11 18:45:38 - app.security - DEBUG - Skipping validation for health check endpoint: /db-health
+2025-01-11 18:45:38 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 3
+2025-01-11 18:45:44 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 4
+2025-01-11 18:46:05 - app.security - DEBUG - Skipping content type validation for multipart form data
+2025-01-11 18:46:05 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 5
+2025-01-11 18:46:39 - app.security - DEBUG - Request validation successful for POST /auth/token
+2025-01-11 18:46:39 - app.security - DEBUG - Cleaned 3 old requests for IP 127.0.0.1
+2025-01-11 18:46:39 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 3
+2025-01-11 18:46:40 - app.security - DEBUG - Creating access token for user: hattywr
+2025-01-11 18:46:40 - app.security - DEBUG - Creating refresh token for user: hattywr
+2025-01-11 18:46:58 - app.security - DEBUG - Skipping content type validation for multipart form data
+2025-01-11 18:46:58 - app.security - DEBUG - Cleaned 1 old requests for IP 127.0.0.1
+2025-01-11 18:46:58 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 3
+2025-01-11 18:46:58 - app.security - INFO - Successfully authenticated user: hattywr
+2025-01-11 18:47:19 - app.security - DEBUG - Cleaned 1 old requests for IP 127.0.0.1
+2025-01-11 18:47:19 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 3
+2025-01-11 18:47:19 - app.security - INFO - Successfully authenticated user: hattywr
+2025-01-12 11:05:38 - app.security - INFO - RateLimiter initialized with 60 requests per minute
+2025-01-13 17:59:54 - app.security - INFO - RateLimiter initialized with 60 requests per minute
+2025-01-13 18:00:20 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 1
+2025-01-13 18:00:20 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 2
+2025-01-13 18:03:09 - app.security - DEBUG - Request validation successful for POST /auth/token
+2025-01-13 18:03:09 - app.security - DEBUG - Cleaned 2 old requests for IP 127.0.0.1
+2025-01-13 18:03:09 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 1
+2025-01-13 18:04:07 - app.security - INFO - RateLimiter initialized with 60 requests per minute
+2025-01-13 18:04:10 - app.security - DEBUG - Request validation successful for POST /auth/token
+2025-01-13 18:04:10 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 1
+2025-01-13 18:04:12 - app.security - DEBUG - Creating access token for user: hattywr
+2025-01-13 18:04:12 - app.security - DEBUG - Creating refresh token for user: hattywr
+2025-01-13 18:06:22 - app.security - DEBUG - Request validation successful for POST /auth/token
+2025-01-13 18:06:22 - app.security - DEBUG - Cleaned 1 old requests for IP 127.0.0.1
+2025-01-13 18:06:22 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 1
+2025-01-13 18:06:30 - app.security - DEBUG - Request validation successful for POST /auth/token
+2025-01-13 18:06:30 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 2
+2025-01-13 18:06:37 - app.security - ERROR - Missing Content-Type header in request
+2025-01-13 18:06:53 - app.security - INFO - RateLimiter initialized with 60 requests per minute
+2025-01-13 18:07:02 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 1
+2025-01-13 18:07:12 - app.security - DEBUG - Request validation successful for POST /auth/token
+2025-01-13 18:07:12 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 2
+2025-01-13 18:07:13 - app.security - DEBUG - Creating access token for user: hattywr
+2025-01-13 18:07:13 - app.security - DEBUG - Creating refresh token for user: hattywr
+2025-01-13 18:07:25 - app.security - DEBUG - Request added for IP 127.0.0.1. Total requests: 3

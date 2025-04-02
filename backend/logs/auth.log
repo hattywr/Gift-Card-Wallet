@@ -1,0 +1,36 @@
+2025-01-10 20:17:33 - app.auth - INFO - Login attempt for user: hattywr
+2025-01-10 20:17:33 - app.auth - INFO - Successful login for user: hattywr
+2025-01-10 20:18:49 - app.auth - INFO - Login attempt for user: hattywr
+2025-01-10 20:18:49 - app.auth - INFO - Successful login for user: hattywr
+2025-01-10 20:22:44 - app.auth - INFO - Login attempt for user: hattywr
+2025-01-10 20:22:45 - app.auth - DEBUG - Updating last login time for user: hattywr
+2025-01-10 20:22:45 - app.auth - DEBUG - Generating access and refresh tokens for user: hattywr
+2025-01-10 20:22:45 - app.auth - INFO - Successful login for user: hattywr
+2025-01-11 18:33:58 - app.auth - INFO - Attempting to register new user: hatty2
+2025-01-11 18:33:58 - app.auth - DEBUG - Hashing password
+2025-01-11 18:33:59 - app.auth - DEBUG - Creating new user instance for hatty2
+2025-01-11 18:33:59 - app.auth - INFO - Successfully registered user: hatty2
+2025-01-11 18:46:39 - app.auth - INFO - Login attempt for user: hattywr
+2025-01-11 18:46:40 - app.auth - DEBUG - Updating last login time for user: hattywr
+2025-01-11 18:46:40 - app.auth - DEBUG - Generating access and refresh tokens for user: hattywr
+2025-01-11 18:46:40 - app.auth - INFO - Successful login for user: hattywr
+2025-01-13 18:03:09 - app.auth - INFO - Login attempt for user: hattywr
+2025-01-13 18:03:10 - app.auth - DEBUG - Updating last login time for user: hattywr
+2025-01-13 18:03:10 - app.auth - ERROR - Error during token generation: type object 'datetime.datetime' has no attribute 'timezone'
+Traceback (most recent call last):
+  File "C:\Users\willh\OneDrive\Coding Stuff\Flutter Projects\Gift Card Wallet\backend\app\auth.py", line 137, in login_for_access_token
+    user.last_login = datetime.now(datetime.timezone.utc)
+                                   ^^^^^^^^^^^^^^^^^
+AttributeError: type object 'datetime.datetime' has no attribute 'timezone'
+2025-01-13 18:04:10 - app.auth - INFO - Login attempt for user: hattywr
+2025-01-13 18:04:11 - app.auth - DEBUG - Updating last login time for user: hattywr
+2025-01-13 18:04:12 - app.auth - DEBUG - Generating access and refresh tokens for user: hattywr
+2025-01-13 18:04:12 - app.auth - INFO - Successful login for user: hattywr
+2025-01-13 18:06:22 - app.auth - INFO - Login attempt for user: hattwyr
+2025-01-13 18:06:22 - app.auth - WARNING - Failed login attempt for user: hattwyr
+2025-01-13 18:06:30 - app.auth - INFO - Login attempt for user: hattwyr
+2025-01-13 18:06:30 - app.auth - WARNING - Failed login attempt for user: hattwyr
+2025-01-13 18:07:12 - app.auth - INFO - Login attempt for user: hattywr
+2025-01-13 18:07:13 - app.auth - DEBUG - Updating last login time for user: hattywr
+2025-01-13 18:07:13 - app.auth - DEBUG - Generating access and refresh tokens for user: hattywr
+2025-01-13 18:07:13 - app.auth - INFO - Successful login for user: hattywr

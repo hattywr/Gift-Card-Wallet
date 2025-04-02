@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from collections import defaultdict
 import time
+from datetime import datetime, date
 from fastapi.responses import JSONResponse
 from .database import get_db
 from .models import User
@@ -84,9 +85,11 @@ def create_access_token(data: dict) -> str:
     logger.debug(f"Creating access token for user: {data.get('sub')}")
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    #expire = datetime.now(datetime.timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
+# Refresh Access Token
 def create_refresh_token(data: dict) -> str:
     logger.debug(f"Creating refresh token for user: {data.get('sub')}")
     to_encode = data.copy()
